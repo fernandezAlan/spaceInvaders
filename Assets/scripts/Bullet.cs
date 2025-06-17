@@ -9,10 +9,17 @@ public class Bullet : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Destroy(gameObject, lifetime); // Destroy the bullet after 5 seconds to prevent memory leaks
+        Destroy(this.gameObject, lifetime); // Destroy the bullet after 5 seconds to prevent memory leaks
     }
 
-
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Bullet collided with: " + other.name); // Log the name of the object collided with
+        if (other.CompareTag("Enemy"))
+        {
+            Destroy(this.gameObject);
+        }
+    }
 
     // Update is called once per frame
     void Update()
