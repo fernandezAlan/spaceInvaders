@@ -5,9 +5,11 @@ using TMPro; // Assuming you are using TextMeshPro for UI text
 public class GameManager : MonoBehaviour
 {
     private GameObject gameManager;
-    private int CurrentLevelIndex = 0; // Variable to keep track of the current level index
-    private string[] sceneNames = { "MainMenu", "level 1", "level 2", "level 3" }; // Array of scene names to load
+    private int CurrentLevelIndex = 3; // Variable to keep track of the current level index
+    private string[] sceneNames = { "MainMenu", "level 1", "level 2", "level 3","YouWin","GameOver" }; // Array of scene names to load
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private int enemyCount = 0; // Variable to keep track of the number of enemies
+    private int lives=3; // Variable to keep track of the player's lives    
     private void Awake()
     {
         if (gameManager == null)
@@ -21,16 +23,29 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void SetEnemyCount(int enemyCount)
+    {
+        Debug.Log("Setting enemy count to: " + enemyCount); // Log the new enemy count
+        this.enemyCount = enemyCount; // Set the enemy count to the specified value
+    }
+
+    public int GetEnemyCount() { 
+        Debug.Log("Current enemy count: " + this.enemyCount); // Log the current enemy count
+        return this.enemyCount; // Return the current enemy count
+    }
     public void ChangeLevel() 
     {
-        int nextLevel = this.CurrentLevelIndex + 1; // Get the current level index
+        int nextLevel = this.CurrentLevelIndex + 1; 
+        Debug.LogWarning("Changing to next level: " + nextLevel); // Log the next level index
         this.ChangeLevel(nextLevel); // Call the overloaded ChangeLevel method with the next level index
     }
 
     public void ChangeLevel(int levelIndex) 
     {
-        if (levelIndex < sceneNames.Length && levelIndex > 0)
+        
+        if (levelIndex < sceneNames.Length && levelIndex >= 0)
         {
+            CurrentLevelIndex= levelIndex; // Update the current level index
             SceneManager.LoadScene(sceneNames[levelIndex]); // Load the scene with the specified index
         }
         else { 
@@ -40,6 +55,7 @@ public class GameManager : MonoBehaviour
 
     public void ChangeLevel(string sceneName)
     {
+        Debug.LogWarning("ChangeLevel:"+ sceneNames.Length); // Log the level index being changed to
         for (int i=0; i<sceneNames.Length;i++) {
             if (sceneNames[i]== sceneName) {
                 SceneManager.LoadScene(sceneName); // Load the scene with the specified index
@@ -49,10 +65,23 @@ public class GameManager : MonoBehaviour
           throw new ArgumentException("Scene name not found in the list: " + sceneName);
 
     }
-    void Start()
+
+    public void CheckWinCondition()
     {
-        
+        if (lives<=0)
+        {
+            ChangeLevel("GameOver"); // If lives are zero, change to the GameOver scene
+        }
+        if (enemyCount <= 0 && sceneNames[CurrentLevelIndex] != "level 3")
+        {
+            ChangeLevel(); // Change to the next level if all enemies are defeated
+        }
+        else if(enemyCount <= 0)
+        { 
+        ChangeLevel(4); // If all levels are completed, return to the main menu
+        }
     }
+    
 
     // Update is called once per frame
     void Update()

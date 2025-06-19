@@ -3,10 +3,7 @@ using UnityEngine;
 public class SmallEnemy : EnemyBase
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    
     //collision
     private void OnTriggerEnter(Collider other)
     {

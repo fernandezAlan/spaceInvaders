@@ -16,6 +16,7 @@ public class Hero : MonoBehaviour
     }
     private void getPlayerInput() 
     {
+        Debug.Log("getPlayerInput called"); // Log when the method is called
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
             if (heroRigidBody.linearVelocity.z <= maxVelocity) 
@@ -34,17 +35,27 @@ public class Hero : MonoBehaviour
         {
             if (heroRigidBody.linearVelocity.x <= maxVelocity)
             {
-                heroRigidBody.AddForce(accelerationRate * Time.deltaTime,0f,0f);
+                heroRigidBody.AddForce(accelerationRate * Time.deltaTime, 0f, 0f);
+                transform.rotation = Quaternion.Euler(0, 0, -20);
             }
+        }
+        else {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
         }
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             if (heroRigidBody.linearVelocity.x >= -maxVelocity)
             {
                 heroRigidBody.AddForce(-accelerationRate * Time.deltaTime, 0f, 0f);
+                // Rota el objeto 45 grados en el eje X
+                transform.rotation = Quaternion.Euler(0, 0, 20);
             }
         }
-        if(fireRate > 0) fireRate -= Time.deltaTime; // Decrease fire rate timer
+        else
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        if (fireRate > 0) fireRate -= Time.deltaTime; // Decrease fire rate timer
         
         if ((Input.GetKey(KeyCode.Space) || Input.GetMouseButtonDown(0)) && fireRate <=0)
         {
@@ -60,5 +71,6 @@ public class Hero : MonoBehaviour
     private void Update()
     {
         getPlayerInput();
+       
     }
 }
