@@ -5,7 +5,7 @@ using TMPro; // Assuming you are using TextMeshPro for UI text
 public class GameManager : MonoBehaviour
 {
     private GameObject gameManager;
-    private int CurrentLevelIndex = 3; // Variable to keep track of the current level index
+    private int CurrentLevelIndex = 0; // Variable to keep track of the current level index
     private string[] sceneNames = { "MainMenu", "level 1", "level 2", "level 3","YouWin","GameOver" }; // Array of scene names to load
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private int enemyCount = 0; // Variable to keep track of the number of enemies
@@ -23,6 +23,20 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void SetLives(int lives)
+    {
+        Debug.Log("Setting lives to: " + lives); // Log the new number of lives
+        this.lives = lives; // Set the number of lives to the specified value
+        if (lives <=0)
+        {
+            ChangeLevel(5); // If lives are zero, change to the GameOver scene
+        }
+    }
+
+    public int GetLives() { 
+        Debug.Log("Current lives: " + this.lives); // Log the current number of lives
+        return this.lives; // Return the current number of lives
+    }
     public void SetEnemyCount(int enemyCount)
     {
         Debug.Log("Setting enemy count to: " + enemyCount); // Log the new enemy count

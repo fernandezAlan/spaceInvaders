@@ -13,8 +13,6 @@ public class SmallEnemy : EnemyBase
         }
     }
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+   
+   
 }

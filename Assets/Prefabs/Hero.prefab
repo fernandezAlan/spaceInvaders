@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 5621693471032754257}
   m_Layer: 0
   m_Name: Hero
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -163,8 +163,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heroRigidBody: {fileID: 0}
   accelerationRate: 500
-  bullet: {fileID: 3887135840810096183, guid: e9c9e7070316eaa4abf514e3283ab521, type: 3}
+  bullet: {fileID: 901390484027055523, guid: 3bf62efb279222041adc9df3f2092352, type: 3}
   maxVelocity: 1500
+  fireCooldown: 0.5
+  speed: 5
+  health: 100
 --- !u!65 &5621693471032754257
 BoxCollider:
   m_ObjectHideFlags: 0
