@@ -29,10 +29,15 @@ public class GameManager : MonoBehaviour
         this.lives = lives; // Set the number of lives to the specified value
         if (lives <=0)
         {
+            this.lives = 3; // Reset lives to 3 if they are zero or less
             ChangeLevel(5); // If lives are zero, change to the GameOver scene
         }
     }
 
+    public string GetCurrentSceneName() 
+    {
+        return SceneManager.GetActiveScene().name; // Get the name of the currently active scene
+    }
     public int GetLives() { 
         Debug.Log("Current lives: " + this.lives); // Log the current number of lives
         return this.lives; // Return the current number of lives
@@ -59,7 +64,8 @@ public class GameManager : MonoBehaviour
         
         if (levelIndex < sceneNames.Length && levelIndex >= 0)
         {
-            CurrentLevelIndex= levelIndex; // Update the current level index
+            Debug.LogWarning("Changing to level index: " + levelIndex); // Log the level index being changed to
+            CurrentLevelIndex = levelIndex; // Update the current level index
             SceneManager.LoadScene(sceneNames[levelIndex]); // Load the scene with the specified index
         }
         else { 
@@ -100,6 +106,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+       
     }
 }
