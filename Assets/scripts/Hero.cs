@@ -12,6 +12,7 @@ public class Hero : MonoBehaviour
     private float cooldownTimer = 0f;
     public float speed = 5f;
     public float health = 100f; // Health of the hero
+    public HealthBarUI healthBar; // Referencia a la barra de vida
     private GameManager gameManager; // Reference to the GameManager
     private void Awake()
     {
@@ -21,26 +22,36 @@ public class Hero : MonoBehaviour
 
     private void TakeDamage(float damage)
     {
-        health -= damage; // Reduce health by the damage amount
-        if (health <=0)
+        health -= damage;
+        health = Mathf.Clamp(health, 0f, 100f);
+
+        if (healthBar != null)
         {
-            //game manager
-            int lives = gameManager.GetLives(); // Get current lives from GameManager
-            int newLives = lives - 1; // Decrease lives by 1
-            gameManager.SetLives(newLives); // Update lives in GameManager
-            gameObject.SetActive(false); // Oculta al héroe
-            Invoke("Respawn", 1f);
-            Debug.LogWarning("Hero is already dead!"); // Log a warning if the hero is already dead 
+            healthBar.SetHealth(health, 100f); // Actualizá la barra
         }
 
+        if (health <= 0)
+        {
+            int lives = gameManager.GetLives();
+            int newLives = lives - 1;
+            gameManager.SetLives(newLives);
+            gameObject.SetActive(false);
+            Invoke("Respawn", 1f);
+            Debug.LogWarning("Hero is already dead!");
+        }
     }
 
     private void Respawn()
     {
-        health = 100f; // Reset health to 100
-        //transform.position = Vector3.zero; // Reset position to the origin
-        gameObject.SetActive(true); // Reactivate the hero
-        Debug.Log("Hero respawned!"); // Log when the hero respawns
+        health = 100f;
+
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(health, 100f); // Restaurá la barra a full
+        }
+
+        gameObject.SetActive(true);
+        Debug.Log("Hero respawned!");
     }
     private void OnTriggerEnter(Collider other)
     {

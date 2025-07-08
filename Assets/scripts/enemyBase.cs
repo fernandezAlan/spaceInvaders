@@ -10,7 +10,7 @@ public class EnemyBase : MonoBehaviour
     public GameObject enemyBullet; // Reference to the bullet prefab
 
     //funciones
-    private void Start()
+    protected virtual void Start()
     {
         Debug.LogWarning("EnemyBase Start method called"); // Log when the Start method is called
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>(); // Find the GameManager in the scene
@@ -36,7 +36,7 @@ public class EnemyBase : MonoBehaviour
         Instantiate(enemyBullet, transform.position, Quaternion.identity);
     }
 
-    void Update()
+    protected virtual void Update()
     {
         // Check if it's time to fire
         if (Time.time >= nextFireTime)

@@ -20,6 +20,10 @@ public class PersistentUI : MonoBehaviour
             Destroy(gameObject); // <- evita duplicados
         }
     }
+    public void ConnectToGameManager(GameManager gm)
+    {
+        this.gameManager = gm;
+    }
     void Update()
     {
         
