@@ -9,4 +9,16 @@ public class HealthBarUI : MonoBehaviour
     {
         fillImage.fillAmount = current / max;
     }
+    public void restoreHealth()
+    {
+        fillImage.fillAmount = 1f; // Restore health bar to full
+    }
+
+    public void desactiveHealthBar() { 
+    gameObject.SetActive(false); // Hide the health bar
+    }
+    public void activeHealthBar()
+    {
+        gameObject.SetActive(true); // Show the health bar
+    }
 }

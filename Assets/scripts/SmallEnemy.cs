@@ -5,7 +5,8 @@ public class SmallEnemy : EnemyBase
     private float enemySpeed = 0.2f;          // Velocidad de avance en Z
     public float frequency = 1f;      // Velocidad del zigzag
     private float amplitude = 5f;      // Amplitud del zigzag en X
-
+    public float Totalhealth = 100f; // Salud del enemigo    
+    public float currentHealth = 100f; // Salud actual del enemigo
     private Vector3 basePosition;
     private float timeOffset;
 
@@ -37,6 +38,21 @@ public class SmallEnemy : EnemyBase
         if (other.CompareTag("Bullet"))
         {
             TakeDamage(other.GetComponent<Bullet>().damageAmount);
+        }
+    }
+
+    public void TakeDamage(float damageAmount)
+    {
+        StartCoroutine(FlashRed());
+        currentHealth = TakeDamage(damageAmount, currentHealth, Totalhealth);
+        if (healthBarCoroutine != null)
+        {
+            StopCoroutine(healthBarCoroutine); // Reiniciar si ya estaba activa
+        }
+        healthBarCoroutine = StartCoroutine(ShowHealthBarTemporarily());
+        if (currentHealth <= 0f)
+        {
+            DestroyShip();
         }
     }
 }

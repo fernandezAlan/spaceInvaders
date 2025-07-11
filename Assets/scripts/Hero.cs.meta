@@ -1,2 +1,15 @@
 fileFormatVersion: 2
 guid: 57b85d083a5c64841bdb7de9c35decc5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - heroRigidBody: {instanceID: 0}
+  - bullet: {instanceID: 0}
+  - healthBar: {instanceID: 0}
+  - shootClip: {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

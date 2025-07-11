@@ -2,56 +2,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hero : MonoBehaviour 
+public class Hero : Ship
 {
     public Rigidbody heroRigidBody; // Reference to the hero's rigid body object
     public float accelerationRate = 500f;
-    public GameObject bullet;
     public float maxVelocity = 1500f;
     public float fireCooldown = 0.5f;
     private float cooldownTimer = 0f;
     public float speed = 5f;
-    public float health = 100f; // Health of the hero
-    public HealthBarUI healthBar; // Referencia a la barra de vida
+    public float totalHealth = 100f; // Health of the hero
+    public float currentHealth = 100f; // Current health of the hero
     private GameManager gameManager; // Reference to the GameManager
     private void Awake()
     {
         heroRigidBody = GetComponent<Rigidbody>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-    }
 
+    }
+ 
+    // Called when the hero collides with an object
+    
     private void TakeDamage(float damage)
     {
-        health -= damage;
-        health = Mathf.Clamp(health, 0f, 100f);
-
-        if (healthBar != null)
-        {
-            healthBar.SetHealth(health, 100f); // Actualizá la barra
-        }
-
-        if (health <= 0)
+        currentHealth = TakeDamage(damage, currentHealth, totalHealth); // Call the base class TakeDamage method
+        if (currentHealth <= 0)
         {
             int lives = gameManager.GetLives();
             int newLives = lives - 1;
             gameManager.SetLives(newLives);
             gameObject.SetActive(false);
             Invoke("Respawn", 1f);
-            Debug.LogWarning("Hero is already dead!");
         }
     }
 
-    private void Respawn()
+    protected override void Respawn()
     {
-        health = 100f;
+        base.Respawn(); // Call the base class Respawn method to restore health bar and sprite color
+        currentHealth = totalHealth;
 
-        if (healthBar != null)
-        {
-            healthBar.SetHealth(health, 100f); // Restaurá la barra a full
-        }
-
-        gameObject.SetActive(true);
-        Debug.Log("Hero respawned!");
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -61,12 +49,7 @@ public class Hero : MonoBehaviour
             TakeDamage(other.GetComponent<EnemyBullet>().damageAmount);
         }
     }
-
-    private void FireBullet()
-    {
-      
-        Instantiate(bullet, transform.position, Quaternion.identity);
-    }
+ 
     private void Update()
     {
         // Countdown for shooting cooldown
