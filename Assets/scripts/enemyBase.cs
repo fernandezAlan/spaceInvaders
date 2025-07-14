@@ -4,11 +4,11 @@ public class EnemyBase : Ship
 {
 
     //variables
-   private GameManager gameManager; // Reference to the GameManager
+    private GameManager gameManager; // Reference to the GameManager
     float nextFireTime = 0f;
     public GameObject enemyBullet; // Reference to the bullet prefab
-
-   
+    public bool isActive = false;
+    public Vector3 basePosition;
     //funciones
     protected override void Start()
     {
@@ -21,22 +21,27 @@ public class EnemyBase : Ship
         gameManager.SetEnemyCount(enemyCount + 1); // Increment enemy count in GameManager
 
     }
+  
     public void DestroyShip() {
         Destroy(gameObject); // Call Die method if health is zero or less
         int enemyCount = gameManager.GetEnemyCount();
         gameManager.SetEnemyCount(enemyCount - 1);
         gameManager.CheckWinCondition(); // Check win condition after enemy is destroyed
     }
-   
-  
+    public virtual void ActiveShip()
+    {
+        isActive = true;
+    }
+
 
     protected virtual void Update()
     {
         // Check if it's time to fire
-        if (Time.time >= nextFireTime)
+        if (Time.time >= nextFireTime && isActive)
         {
+           float nextFireDelay = Random.Range(3f, 8f);
             FireBullet(); // Call method to fire enemy bullet
-            nextFireTime = Time.time + 2f; // Set next fire time (2 seconds later)
+            nextFireTime = Time.time + nextFireDelay; // Set next fire time (2 seconds later)
         }
     }
 }

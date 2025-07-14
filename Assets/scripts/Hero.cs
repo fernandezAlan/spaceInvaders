@@ -39,7 +39,7 @@ public class Hero : Ship
     {
         base.Respawn(); // Call the base class Respawn method to restore health bar and sprite color
         currentHealth = totalHealth;
-
+        transform.localPosition = initPos; // Reset position to initial position
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -48,8 +48,17 @@ public class Hero : Ship
         {
             TakeDamage(other.GetComponent<EnemyBullet>().damageAmount);
         }
+      
     }
- 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            // Si el enemigo colisiona con el jugador, se destruye a sí mismo
+            TakeDamage(totalHealth);
+        }
+    }
+
     private void Update()
     {
         // Countdown for shooting cooldown

@@ -11,12 +11,14 @@ public class Ship : MonoBehaviour
     public float fireDelay = 0.2f; // Retraso en segundos
     public HealthBarUI healthBar; // Referencia a la barra de vida
     public Coroutine healthBarCoroutine;
+    public Vector3 initPos; // Initial position of the hero
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
     {
         audioSource = GetComponent<AudioSource>();
         spriteRender = GetComponentInChildren<SpriteRenderer>();
         originalColor = spriteRender.color;
+        initPos = transform.localPosition;
     }
     public IEnumerator ShowHealthBarTemporarily()
     {
