@@ -16,6 +16,9 @@ TagManager:
   - Rocket
   - Bullet
   - EnemyBullet
+  - SpawnPoint
+  - BottomWall
+  - collisionWall
   layers:
   - Default
   - TransparentFX

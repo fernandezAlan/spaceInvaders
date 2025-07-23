@@ -341,7 +341,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &7919134299170924811
 MonoBehaviour:
@@ -356,15 +356,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootClip: {fileID: 8300000, guid: 4310474905e266640852f43bd609a1a4, type: 3}
+  explosionClip: {fileID: 8300000, guid: 8524588a69a4f3e40bb597b6221138f1, type: 3}
   bullet: {fileID: 901390484027055523, guid: 3bf62efb279222041adc9df3f2092352, type: 3}
   fireDelay: 0.2
-  heroRigidBody: {fileID: 0}
+  healthBar: {fileID: 8298121266724664497}
+  initPos: {x: 0, y: 0, z: 0}
+  explosionPrefab: {fileID: 5951042099586385178, guid: e1178230ed9698041a31e8889697e116,
+    type: 3}
+  rb: {fileID: 994127135308595757}
+  col: {fileID: 5621693471032754257}
+  shipRender: {fileID: 0}
+  heroRigidBody: {fileID: 994127135308595757}
   accelerationRate: 500
   maxVelocity: 1500
   fireCooldown: 0.5
   speed: 5
-  health: 100
-  healthBar: {fileID: 8298121266724664497}
+  totalHealth: 100
+  currentHealth: 100
 --- !u!65 &5621693471032754257
 BoxCollider:
   m_ObjectHideFlags: 0

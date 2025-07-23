@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,11 +10,12 @@ public class Hero : Ship
     public float fireCooldown = 0.5f;
     private float cooldownTimer = 0f;
     public float speed = 5f;
-    public float totalHealth = 100f; // Health of the hero
-    public float currentHealth = 100f; // Current health of the hero
+    public int totalHealth = 100; // Health of the hero
+    public int currentHealth = 100; // Current health of the hero
     private GameManager gameManager; // Reference to the GameManager
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake(); // Call the base class Awake method to initialize audio source, sprite renderer, etc.
         heroRigidBody = GetComponent<Rigidbody>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
@@ -22,39 +23,47 @@ public class Hero : Ship
  
     // Called when the hero collides with an object
     
-    private void TakeDamage(float damage)
+    private void TakeDamage(int damage)
     {
+        gameManager.AddDamage(damage); // Add damage to the total damage received
         currentHealth = TakeDamage(damage, currentHealth, totalHealth); // Call the base class TakeDamage method
         if (currentHealth <= 0)
         {
             int lives = gameManager.GetLives();
             int newLives = lives - 1;
             gameManager.SetLives(newLives);
-            gameObject.SetActive(false);
-            Invoke("Respawn", 1f);
+            //gameObject.SetActive(false);
+            StartSplosion(); // Call the method to start the explosion effect
+            gameManager.Invoke("RespawnPlayer", 1f); // Espera 1 segundo antes de reaparecer
+            Destroy(gameObject);
         }
     }
 
     protected override void Respawn()
     {
         base.Respawn(); // Call the base class Respawn method to restore health bar and sprite color
+        Instantiate(gameObject); // Instantiate a new hero object
         currentHealth = totalHealth;
         transform.localPosition = initPos; // Reset position to initial position
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Hero collided with: " + other.name); // Log the name of the object collided with
         if (other.CompareTag("EnemyBullet"))
         {
             TakeDamage(other.GetComponent<EnemyBullet>().damageAmount);
         }
-      
+        if (other.CompareTag("Enemy"))
+        {
+            // Si el enemigo colisiona con el jugador, se destruye a sí mismo
+            TakeDamage(totalHealth);
+        }
+
     }
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            // Si el enemigo colisiona con el jugador, se destruye a s� mismo
+            // Si el enemigo colisiona con el jugador, se destruye a sí mismo
             TakeDamage(totalHealth);
         }
     }
@@ -78,6 +87,6 @@ public class Hero : Ship
         Vector3 move = new Vector3(moveX, 0f, moveZ); // Movimiento en plano XZ
 
         transform.position += move * speed * Time.deltaTime;
-
+      
     }
 }

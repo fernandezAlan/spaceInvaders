@@ -1,59 +1,108 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyWave : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public float delayBetweenRows = 3f;
+    public float delayBetweenShips = 1f;
+
+    private int currentRowIndex = 0;
+    private int currentShipIndex = 0;
+
+    private float timer = 0f;
+    private bool activating = true;
+    private bool waitingBetweenRows = false;
+    private float maxDescend = -11f; // Altura máxima de descenso para las naves
+
+    private Transform[] rows;
+
     void Start()
     {
-         StartCoroutine(ActivateWave());
-    }
-    IEnumerator ActivateWave()
-    {
-        foreach (Transform row in transform) // Recorre cada fila
+        ApplyStatsFromGameManager();
+
+        int rowCount = transform.childCount;
+        rows = new Transform[rowCount];
+        for (int i = 0; i < rowCount; i++)
         {
-            // Inicia activación de naves dentro de la fila
-            StartCoroutine(ActivateRow(row));
-
-            // Espera 15 segundos antes de pasar a la próxima fila
-            yield return new WaitForSeconds(10f);
-        }
-    }
-    IEnumerator SlideForward(Transform target, float distance, float duration)
-    {
-        Vector3 startPos = target.position;
-        Vector3 endPos = startPos + new Vector3(0, 0, distance);
-
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            target.position = Vector3.Lerp(startPos, endPos, elapsed / duration);
-            elapsed += Time.deltaTime;
-            yield return null;
+            rows[i] = transform.GetChild(i);
         }
 
-        // Asegura que termine exactamente en la posición final
-        target.position = endPos;
+        ActivateFirstShip(); // 👉 activa inmediatamente la primera nave
     }
-    IEnumerator ActivateRow(Transform row)
-    {
-        foreach (Transform enemy in row)
-        {
-            SmallEnemy ship = enemy.GetComponent<SmallEnemy>();
-            if (ship != null)
-            {
-                ship.ActiveShip(); // Solo esto
-                yield return new WaitForSeconds(2f); // Delay entre naves
-            }
-        }
 
-        // Delay entre filas si querés:
-        yield return new WaitForSeconds(15f);
-    }
-    // Update is called once per frame
     void Update()
     {
-        
+        if (!activating || currentRowIndex >= rows.Length) return;
+
+        timer += Time.deltaTime;
+
+        if (waitingBetweenRows)
+        {
+            if (timer >= delayBetweenRows)
+            {
+                timer = 0f;
+                waitingBetweenRows = false;
+                currentShipIndex = 0;
+                currentRowIndex++;
+            }
+            return;
+        }
+
+        if (currentRowIndex < rows.Length)
+        {
+            Transform currentRow = rows[currentRowIndex];
+
+            // Espera para la segunda nave en adelante
+            if (currentShipIndex < currentRow.childCount && timer >= delayBetweenShips)
+            {
+                Transform enemy = currentRow.GetChild(currentShipIndex);
+                if (enemy != null)
+                {
+                    SmallEnemy ship = enemy.GetComponent<SmallEnemy>();
+                    if (ship != null)
+                    {
+                        ship.maxDescend = maxDescend;
+                        ship.descend = true;
+                        ship.ActiveShip();
+                    }
+                }
+
+                currentShipIndex++;
+                timer = 0f;
+            }
+            else if (currentShipIndex >= currentRow.childCount)
+            {
+                waitingBetweenRows = true;
+                timer = 0f;
+                maxDescend -= 2f; // aumenta la altura máxima de descenso para las siguientes filas
+            }
+        }
+    }
+
+    private void ActivateFirstShip()
+    {
+        if (rows.Length > 0 && rows[0].childCount > 0)
+        {
+            Transform enemy = rows[0].GetChild(0);
+            if (enemy != null)
+            {
+                SmallEnemy ship = enemy.GetComponent<SmallEnemy>();
+                if (ship != null)
+                {
+                    ship.maxDescend = maxDescend;
+                    ship.descend = true;
+                    ship.ActiveShip();
+                }
+            }
+
+            currentShipIndex = 1; // empezamos desde la segunda nave
+        }
+    }
+
+    private void ApplyStatsFromGameManager()
+    {
+        GameManager gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        EnemyStatsSO stats = gm.GetCurrentEnemyStats();
+        delayBetweenRows = stats.delayBetweenRows;
+        delayBetweenShips = stats.delayBetweenShips;
     }
 }

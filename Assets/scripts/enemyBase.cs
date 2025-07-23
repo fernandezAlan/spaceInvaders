@@ -22,10 +22,11 @@ public class EnemyBase : Ship
 
     }
   
-    public void DestroyShip() {
+    public void DestroyShip(bool explosion) {
         Destroy(gameObject); // Call Die method if health is zero or less
         int enemyCount = gameManager.GetEnemyCount();
         gameManager.SetEnemyCount(enemyCount - 1);
+        if(explosion)StartSplosion();
         gameManager.CheckWinCondition(); // Check win condition after enemy is destroyed
     }
     public virtual void ActiveShip()

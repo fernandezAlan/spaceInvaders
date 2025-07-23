@@ -8,21 +8,35 @@ public class SmallEnemy : EnemyBase
     private float enemySpeed = 0.2f;          // Velocidad de avance en Z
     private float frequency = 0.5f;      // Velocidad del zigzag
     private float amplitude = 5f;      // Amplitud del zigzag en X
-    public float Totalhealth = 100f; // Salud del enemigo    
-    public float currentHealth = 100f; // Salud actual del enemigo
+    private int Totalhealth = 50; // Salud del enemigo    
+    private int currentHealth = 50; // Salud actual del enemigo
     private float timeOffset;
     private float baseZ;         // Para controlar movimiento en Z
     private float startX;        // Para mantener la posición inicial en X
     private bool isDescending = false;
     private bool isZigzagging = false;
     private bool isSlidingToStart = false;
-
+    private int pointsValue; // Valor de puntos al destruir el enemigo
+    public float maxDescend; // Altura máxima de descenso
+    public bool descend = true; // Controla si el enemigo desciende o asciende
+    private GameManager gameManager; // Referencia al GameManager
     protected override void Start()
     {
         base.Start();
-        Rigidbody rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
         timeOffset = Random.Range(1f, 10f);
+        ApplyStatsFromGameManager(); // Aplicar estadísticas desde GameManager
+    }
+
+    private void ApplyStatsFromGameManager()
+    {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        EnemyStatsSO stats = gameManager.GetCurrentEnemyStats();
+
+        frequency = stats.speed;
+        Totalhealth = stats.health;
+        currentHealth = stats.health;
+        pointsValue = stats.pointsValue; // Valor de puntos al destruir el enemigo
+        //damageAmount = stats.damage;
     }
     public override void ActiveShip()
     {
@@ -70,7 +84,6 @@ public class SmallEnemy : EnemyBase
         while (slideElapsed < slideDuration)
         {
             float t = slideElapsed / slideDuration;
-            // Podés aplicar easing suave si querés:
              t = t * t * (3f - 2f * t); // SmoothStep
             transform.position = Vector3.Lerp(currentPos, zigzagStartPos, t);
 
@@ -87,17 +100,29 @@ public class SmallEnemy : EnemyBase
     {
         base.Update();
 
-     
-    if (!isZigzagging || isSlidingToStart) return;
+        // Ignorar si aún no está zigzagueando o se está deslizando hacia el punto inicial
+        if (!isZigzagging || isSlidingToStart) return;
+        float currentZ = transform.position.z;
+        // Cambiar dirección si se pasa de los límites
+        if (descend && currentZ <= maxDescend + 0.01f)
+        {
+            descend = false; // Empezar a subir
+        }
+        else if (!descend && currentZ >= 0f - 0.01f)
+        {
+            descend = true; // Empezar a bajar nuevamente
+        }
 
-    // Movimiento continuo en Z
-    baseZ -= enemySpeed * Time.deltaTime;
+        // Movimiento en Z (arriba o abajo)
+        if (descend)
+            baseZ -= enemySpeed * Time.deltaTime;
+        else
+            baseZ += enemySpeed * Time.deltaTime;
 
-    // Zigzag lateral en X
-    float wave = Mathf.Sin((Time.time + timeOffset) * frequency) * amplitude;
-
-    transform.position = new Vector3(startX + wave, transform.position.y, baseZ);
-}
+        // Movimiento lateral en zigzag
+        float wave = Mathf.Sin((Time.time + timeOffset) * frequency) * amplitude;
+        transform.position = new Vector3(startX + wave, transform.position.y, baseZ);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -105,7 +130,16 @@ public class SmallEnemy : EnemyBase
         {
             TakeDamage(other.GetComponent<Bullet>().damageAmount);
         }
-        
+        if (other.CompareTag("Player"))
+        {
+            // Si el enemigo colisiona con el jugador, se destruye a sí mismo
+            TakeDamage(Totalhealth);
+        }
+        if (other.CompareTag("collisionWall"))
+        {
+            DestroyShip(false);
+        }
+
     }
     void OnCollisionEnter(Collision collision)
     {
@@ -114,8 +148,12 @@ public class SmallEnemy : EnemyBase
             // Si el enemigo colisiona con el jugador, se destruye a sí mismo
             TakeDamage(Totalhealth);
         }
+        if (collision.gameObject.CompareTag("collisionWall"))
+        {
+            DestroyShip(false);
+        }
     }
-    public void TakeDamage(float damageAmount)
+    public void TakeDamage(int damageAmount)
     {
         StartCoroutine(FlashRed());
         currentHealth = TakeDamage(damageAmount, currentHealth, Totalhealth);
@@ -126,7 +164,8 @@ public class SmallEnemy : EnemyBase
         healthBarCoroutine = StartCoroutine(ShowHealthBarTemporarily());
         if (currentHealth <= 0f)
         {
-            DestroyShip();
+            gameManager.AddPoints(pointsValue); // Añadir puntos al puntaje del jugador
+            DestroyShip(true);
         }
     }
 }

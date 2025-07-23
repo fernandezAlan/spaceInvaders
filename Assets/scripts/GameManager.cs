@@ -6,10 +6,38 @@ public class GameManager : MonoBehaviour
 {
     private GameObject gameManager;
     private int CurrentLevelIndex = 0; // Variable to keep track of the current level index
-    private string[] sceneNames = { "MainMenu", "level 1", "level 2", "level 3", "YouWin", "GameOver" }; // Array of scene names to load
+    private string[] sceneNames = { "MainMenu", "level 1", "level 2", "level 3", "level 4", "level 5", "YouWin", "GameOver" }; // Array of scene names to load
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private int enemyCount = 0; // Variable to keep track of the number of enemies
-    private int lives = 3; // Variable to keep track of the player's lives    
+    private int lives = 3; // Variable to keep track of the player's lives
+    private PersistentUI persistentUI; // Reference to the PersistentUI script
+    public GameObject playerPrefab;
+    public EnemyStatsSO[] enemyStatsByLevel;
+    private int currentPoints = 0;
+    private int totalPoints = 0;
+    private int TotalDamageRecived = 0; // Variable to keep track of the total damage received by the player    
+    public float invulnerabilityDuration = 2f;
+    private bool isInvulnerable = false;
+    public Rigidbody heroRigidBody;
+    public Collider heroCollider;
+    public Renderer heroRenderer;
+    public void RespawnPlayer()
+    {
+        Vector3 spawnPosition = new Vector3(-0.69f, 0.3f, -8.8f); // Coordenadas del punto de aparición
+        GameObject newHero = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
+
+        Hero heroScript = newHero.GetComponent<Hero>();
+        if (heroScript != null)
+        {
+            heroScript.SetInvulnerable(invulnerabilityDuration); // Activar invulnerabilidad
+        }
+
+    }
+    public EnemyStatsSO GetCurrentEnemyStats()
+    {
+        int level = Mathf.Clamp(CurrentLevelIndex -1, 0, enemyStatsByLevel.Length - 1);
+        return enemyStatsByLevel[level];
+    }
     private void Awake()
     {
         if (gameManager == null)
@@ -34,13 +62,12 @@ public class GameManager : MonoBehaviour
 
     public void SetLives(int lives)
     {
-        Debug.Log("Setting lives to: " + lives); // Log the new number of lives
         this.lives = lives; // Set the number of lives to the specified value
         if (lives <= 0)
         {
             this.lives = 3; // Reset lives to 3 if they are zero or less
            // this.CurrentLevelIndex = 1; // Reset the current level index to 0 (MainMenu)
-            ChangeLevel(5); // If lives are zero, change to the GameOver scene
+            ChangeLevel(7); // If lives are zero, change to the GameOver scene
         }
     }
 
@@ -55,20 +82,16 @@ public class GameManager : MonoBehaviour
     }
     public void SetEnemyCount(int enemyCount)
     {
-        Debug.Log("Setting enemy count to: " + enemyCount); // Log the new enemy count
         this.enemyCount = enemyCount; // Set the enemy count to the specified value
     }
 
     public int GetEnemyCount()
     {
-        Debug.Log("Current enemy count: " + this.enemyCount); // Log the current enemy count
         return this.enemyCount; // Return the current enemy count
     }
     public void ChangeLevel()
     {
-        Debug.LogWarning("ChangeLevel called with CurrentLevelIndex: " + this.CurrentLevelIndex); // Log the current level index
         int nextLevel = this.CurrentLevelIndex + 1;
-        Debug.LogWarning("Changing to next level: " + nextLevel); // Log the next level index
         this.ChangeLevel(nextLevel); // Call the overloaded ChangeLevel method with the next level index
     }
 
@@ -77,9 +100,7 @@ public class GameManager : MonoBehaviour
 
         if (levelIndex < sceneNames.Length && levelIndex >= 0)
         {
-            Debug.LogWarning("Changing to level index: " + levelIndex); // Log the level index being changed to
             this.CurrentLevelIndex = levelIndex; // Update the current level index
-            Debug.LogWarning("CurrentLevelIndex: " + this.CurrentLevelIndex);
             SceneManager.LoadScene(sceneNames[levelIndex]); // Load the scene with the specified index
         }
         else
@@ -104,15 +125,22 @@ public class GameManager : MonoBehaviour
 
     public void CheckWinCondition()
     {
-        if (enemyCount <= 0 && sceneNames[CurrentLevelIndex] != "level 3")
+        if (enemyCount <= 0 && sceneNames[CurrentLevelIndex] != "level 5")
         {
-            ChangeLevel(); // Change to the next level if all enemies are defeated
+            LevelCompleted(); // Call LevelCompleted to update scores
+            persistentUI = GameObject.Find("HUD").GetComponent<PersistentUI>();
+            persistentUI.ShowLevelCompleteText(); // Show level complete text
+            Invoke(nameof(ChangeLevel), 2f); // Espera 2 segundo y ejecuta
         }
         else if (enemyCount <= 0)
         {
-            ChangeLevel(4); // If all levels are completed, return to the main menu
-           
+            Invoke(nameof(ChangeToWinView), 2f);
         }
+    }
+
+    private void ChangeToWinView()
+    {
+        ChangeLevel(6); // Redirige manualmente al nivel final
     }
 
     public void ResetGame()
@@ -120,7 +148,44 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu"); // Load the main menu scene
         Destroy(gameManager); // Destroy the GameManager instance to reset the game state
     }
+    // SCORE MANAGEMENT
+    public void AddPoints(int points)
+    {
+        currentPoints += points;
+    }
 
+    public void LevelCompleted()
+    {
+        totalPoints += currentPoints;
+        currentPoints = 0;
+    }
+
+    public int GetPointsValue()
+    {
+        return totalPoints + currentPoints; // por si se pierde antes de sumar
+    }
+
+    public int GetCurrentPoints()
+    {
+        return currentPoints;
+    }
+
+    public void ResetPoints()
+    {
+        currentPoints = 0;
+        totalPoints = 0;
+    }
+
+    //TOTAL DAMEGE RECEIVED
+    public void AddDamage(int damage)
+    {
+        TotalDamageRecived += damage; // Increment the total damage received by the specified amount
+    }
+
+    public int GetTotalDamageRecived()
+    {
+        return TotalDamageRecived; // Return the total damage received
+    }
     // Update is called once per frame
     void Update()
     {

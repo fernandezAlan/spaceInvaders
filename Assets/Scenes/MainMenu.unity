@@ -167,10 +167,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -646,14 +646,14 @@ RectTransform:
   m_GameObject: {fileID: 905580710}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4.9506, y: 4.9506, z: 4.9506}
+  m_LocalScale: {x: 15.19734, y: 14.648038, z: 14.648038}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 240187769}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 38}
   m_SizeDelta: {x: 130, y: 78.3441}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &905580712
@@ -724,6 +724,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 742661359c7a1d4438726db40f46f4fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 7712322097571815528, guid: fdabec5c82a923644b0bd48485277472,
+    type: 3}
+  enemyStatsByLevel:
+  - {fileID: 11400000, guid: 0a86cebeece6d9f4685b44be48ed7476, type: 2}
+  - {fileID: 11400000, guid: 7dbe2221177648940b6ce8816344d1d9, type: 2}
+  - {fileID: 11400000, guid: 7089d85208099a945bf8feb0cb19ba13, type: 2}
+  invulnerabilityDuration: 2
+  heroRigidBody: {fileID: 0}
+  heroCollider: {fileID: 0}
+  heroRenderer: {fileID: 0}
 --- !u!4 &1018921395
 Transform:
   m_ObjectHideFlags: 0
@@ -767,14 +777,14 @@ RectTransform:
   m_GameObject: {fileID: 1891192482}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.2842388, y: 2.2842388, z: 2.2842388}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 240187769}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -130}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 142}
   m_SizeDelta: {x: 130, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1891192484
@@ -903,7 +913,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: ab6a92ee3bea3f34caa9aa378465db46, type: 3}
   m_Resource: {fileID: 8300000, guid: ab6a92ee3bea3f34caa9aa378465db46, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.239
   m_Pitch: 1
   Loop: 1
   Mute: 0

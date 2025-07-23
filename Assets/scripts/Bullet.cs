@@ -5,9 +5,9 @@ public class Bullet : MonoBehaviour
 {
     private float moveSpeed = 5f; // Speed of the bullet
     private float lifetime = 5f; // Lifetime of the bullet in seconds
-    public float damageAmount = 25f; // Damage amount dealt by the bullet
+    public int damageAmount = 25; // Damage amount dealt by the bullet
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected virtual void Start()
     {
         Destroy(this.gameObject, lifetime); // Destroy the bullet after 5 seconds to prevent memory leaks
     }
@@ -19,6 +19,7 @@ public class Bullet : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
     }
 
     // Update is called once per frame

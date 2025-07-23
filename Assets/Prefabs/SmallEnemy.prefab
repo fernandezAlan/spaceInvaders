@@ -84,10 +84,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7498577044538316500}
-  - component: {fileID: 470583314814174074}
   - component: {fileID: -7839048595349700751}
   - component: {fileID: 7219415034097662754}
   - component: {fileID: 7091908128325632766}
+  - component: {fileID: 8329360258809419406}
   m_Layer: 0
   m_Name: SmallEnemy
   m_TagString: Enemy
@@ -112,33 +112,6 @@ Transform:
   - {fileID: 950237269600817824}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &470583314814174074
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3091341249573708803}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
 --- !u!114 &-7839048595349700751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,15 +125,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootClip: {fileID: 8300000, guid: 06ada5590eba8d6489b36c6f3c54ff78, type: 3}
+  explosionClip: {fileID: 8300000, guid: 8524588a69a4f3e40bb597b6221138f1, type: 3}
   bullet: {fileID: 8514927706717755134, guid: b2ef030072bfc474bb5837e6f108d25a, type: 3}
   fireDelay: 0.2
   healthBar: {fileID: 2579273730818687875}
+  initPos: {x: 0, y: 0, z: 0}
+  explosionPrefab: {fileID: 5951042099586385178, guid: e1178230ed9698041a31e8889697e116,
+    type: 3}
   enemyBullet: {fileID: 8514927706717755134, guid: b2ef030072bfc474bb5837e6f108d25a,
     type: 3}
   isActive: 0
   basePosition: {x: 0, y: 0, z: 0}
-  Totalhealth: 100
-  currentHealth: 100
 --- !u!65 &7219415034097662754
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -176,7 +151,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -279,6 +254,33 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!54 &8329360258809419406
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3091341249573708803}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &4921195349963559412
 GameObject:
   m_ObjectHideFlags: 0
